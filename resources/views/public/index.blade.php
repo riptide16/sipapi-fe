@@ -326,13 +326,49 @@
     <script>
         $(document).ready(function() {
             var result = @json($infographicsMapping);
-            var data = [];
-            result.forEach(function(obj){
-                data.push([
-                    obj['province_code'],
-                    obj['total']
-                ]);
-            });
+            // var data = [];
+            // result.forEach(function(obj){
+            //     data.push([
+            //         obj['province_code'],
+            //         obj['total']
+            //     ]);
+            // });
+            const data = [
+                ['id-ac', 171],
+                ['id-su', 134],
+                ['id-sb', 302],
+                ['id-ri', 203],
+                ['id-ja', 80],
+                ['id-sl', 225],
+                ['id-be', 45],
+                ['id-1024', 110],
+                ['id-bb', 328],
+                ['id-kr', 17],
+                ['id-jk', 598],
+                ['id-jr', 910],
+                ['id-jt', 1287],
+                ['id-yo', 882],
+                ['id-ji', 2433],
+                ['id-bt', 183],
+                ['id-ba', 539],
+                ['id-nb', 157],
+                ['id-nt', 47],
+                ['id-kb', 167],
+                ['id-kt', 108],
+                ['id-ks', 233],
+                ['id-ki', 237],
+                ['id-ku', 32],
+                ['id-sw', 30],
+                ['id-st', 28],
+                ['id-se', 236],
+                ['id-sg', 101],
+                ['id-go', 110],
+                ['id-sr', 29],
+                ['id-ma', 14],
+                ['id-la', 19],
+                ['id-pa', 8],
+                ['id-ib', 25]
+            ];
             Highcharts.mapChart('infographics', {
                 chart: {
                     map: 'countries/id/id-all'
@@ -359,9 +395,25 @@
                     },
                     dataLabels: {
                         enabled: true,
-                        format: '{point.name}'
+                        formatter: function() {
+                            if (this.point['hc-key'] === 'id-ib') {
+                                return 'Papua Barat';
+                            }
+
+                            return this.point.name;
+                        }
                     }
-                }]
+                }],
+
+                tooltip: {
+                    pointFormatter: function() {
+                        if (this['hc-key'] === 'id-ib') {
+                            return 'Papua Barat: ' + this.value;
+                        }
+
+                        return this.name + ' ' + this.value;
+                    }
+                }
             });
         });
     </script>
