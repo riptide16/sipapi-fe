@@ -1,0 +1,2 @@
+<input {{ $attributes->merge(['class' => 'form-check-input', 'type' => 'checkbox']) }} id="{{ $attributes->get('name') }}">
+<x-forms.label class="form-check-label mb-0" :label="__('Remember me')" :for="$attributes->get('name')"/>

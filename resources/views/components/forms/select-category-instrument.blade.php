@@ -1,0 +1,13 @@
+@props(['placeholder', 'fill'])
+
+<select id="{{ $attributes->get('name') }}"
+    {{ $attributes->merge(['class' => 'custom-select form-control']) }} value="{{ $fill ?? old($attributes->get('name')) }}">
+    <option value="" selected>--- {{ __('Choose') }} {{ __($placeholder) }} ---</option>
+    @foreach ($categories ?: [] as $item)
+        <option value="{{ $item['id'] }}" {{ ( $item['id'] == $fill) || (in_array($item['id'], (array) old($attributes->get('name'), []))) ? 'selected=selected' : '' }}>{{ __($item['display_name'] ?? $item['name']) }}</option>
+        {{-- @empty --}}
+    @endforeach
+</select>
+@error($attributes->get('name'))
+    <span class="form-text text-danger">{{ $message }}</span>
+@enderror
