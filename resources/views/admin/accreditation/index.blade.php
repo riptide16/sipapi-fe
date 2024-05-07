@@ -22,13 +22,24 @@
 <div class="card border-0 shadow mb-4">
     <div class="card-body">
         <div class="table-responsive">
+            <!-- <div style="margin-bottom: 10px">
+                Toggle column: 
+                <a class="toggle-vis" data-column="1">Kode Pengajuan</a> <br> <a class="toggle-vis" data-column="2">NPP</a> - <a class="toggle-vis" data-column="3">Lembaga Induk</a> - <a class="toggle-vis" data-column="4">Nama Perpustakaan</a> - <a class="toggle-vis" data-column="5">Jenis Perpustakaan</a> - <a class="toggle-vis" data-column="6">Wilayah</a>
+            </div> -->
             <table id="datatable" class="table table-centered table-nowrap mb-0 rounded">
                 <thead class="thead-light">
                     <tr>
                         <th class="border-0 rounded-start">No</th>
                         <th class="border-0">Kode Pengajuan</th>
-                        <th class="border-0">Lembaga Induk</th>
-                        <th class="border-0">Nama Perpustakaan</th>
+                        <th class="border-0">NPP</th>
+                        <th class="border-0" wrap>Lembaga Induk</th>
+                        <th class="border-0" wrap>Nama Perpustakaan</th>
+                        <th class="border-0">Jenis Perpustakaan</th>
+                        <th class="border-0">Wilayah</th>
+                        <th class="border-0">Provinsi</th>
+                        <th class="border-0">Kab./Kota</th>
+                        <th class="border-0">Kecamatan</th>
+                        <th class="border-0">Alamat</th>
                         <th class="border-0">Tanggal Ajuan</th>
                         <th class="border-0">Status</th>
                         <th class="border-0">Aksi</th>
@@ -42,10 +53,18 @@
                         <tr>
                             <td>{{ $i + 1 }}</td>
                             <td>{{ $data['code'] }}</td>
-                            <td>{{ $data['institution']['agency_name'] }}</td>
+                            <td>{{ $data['institution']['npp'] }}</td>
+                            <td ><a href="{{ route('admin.data_kelembagaan.show', $data['institution']['id']) }}">{{ $data['institution']['agency_name'] }}</a></td>
                             <td>{{ $data['institution']['library_name'] }}</td>
-                            <td>{{ \Helper::formatDate($data['created_at'], 'd F Y') }}</td>
+                            <td>{{ $data['institution']['category'] }}</td>
+                            <td>{{ $data['institution']['region']['name'] }}</td>
+                            <td>{{ $data['institution']['province']['name'] }}</td>
+                            <td>{{ $data['institution']['city']['type'] }} {{ $data['institution']['city']['name'] }}</td>
+                            <td>{{ $data['institution']['subdistrict']['name'] }}</td>
+                            <td>{{ $data['institution']['address'] }}</td>
+                            <td>{{ \Helper::formatDate($data['created_at'], 'Y-m-d') }}</td>
                             <td>{{ \Helper::titlize($data['appealed_at'] ? 'banding' : $data['status']) }}</td>
+                            <!-- <td>{{ \Helper::titlize($data['appealed_at'] ? 'banding' : $data['status']) }}</td> -->
                             <td>
                                 @include('components.general-actions-resource', [
                                     'route' => 'admin.akreditasi',
@@ -69,6 +88,26 @@
                         </tr>
                     @endforelse
                 </tbody>
+                <!-- <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th class="border-0">Jenis Perpustakaan</th>
+                        <th class="border-0">Wilayah</th>
+                        <th class="border-0">Provinsi</th>
+                        <th class="border-0">Kab./Kota</th>
+                        <th class="border-0">Kecamatan</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot> -->
             </table>
         </div>
     </div>
@@ -76,5 +115,61 @@
 @endsection
 
 @push('js')
-    <script src="{{ asset('admin/js/data-table.js') }}"></script>
+    <script>
+        const table = $('#datatable').DataTable({
+            language: {
+                searchPlaceholder: 'Search...',
+                sSearch: '',
+            },
+            select: true,
+            order: [[0, "asc"]],
+            autoWidth: false,
+            lengthMenu: [10,20,50,75,100],
+            drawCallback: function() {
+                $.getScript('/admin/js/jquery.sweet-alert.js');
+            },
+            initComplete: function () {
+                this.api()
+                    .columns([5,6,7,8,9])
+                    .every(function () {
+                        let column = this;
+        
+                        // Create select element
+                        let select = document.createElement('select');
+                        select.add(new Option(''));
+                        column.footer().replaceChildren(select);
+        
+                        // Apply listener for user change in value
+                        select.addEventListener('change', function () {
+                            var val = DataTable.util.escapeRegex(select.value);
+        
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+        
+                        // Add list of options
+                        column
+                            .data()
+                            .unique()
+                            .sort()
+                            .each(function (d, j) {
+                                select.add(new Option(d));
+                            });
+                    });
+            }
+        });
+
+        document.querySelectorAll('a.toggle-vis').forEach((el) => {
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+        
+                let columnIdx = e.target.getAttribute('data-column');
+                let column = table.column(columnIdx);
+        
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
+        });
+    </script>
 @endpush
