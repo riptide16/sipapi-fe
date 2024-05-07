@@ -30,6 +30,7 @@
                         <th class="border-0">Name</th>
                         <th class="border-0">E-mail</th>
                         <th class="border-0">Role</th>
+			            <th class="border-0">Status</th>
                         <th class="border-0">Aksi</th>
                     </tr>
                 </thead>
@@ -43,6 +44,7 @@
                             <td>{{ $data['name'] }}</td>
                             <td>{{ $data['email'] }}</td>
                             <td>{{ $data['role']['display_name'] ?? '' }}</td>
+			    <td>{{ $data['status'] }}</td>
                             <td>
                                 @include('components.general-actions', [
                                     'route' => 'admin.user',
