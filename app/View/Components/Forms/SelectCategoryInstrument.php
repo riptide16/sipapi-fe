@@ -63,6 +63,18 @@ class SelectCategoryInstrument extends Component
                 'id' => 'Khusus',
                 'name' => 'Khusus'
             ],
+            [
+                'id' => 'PAUD',
+                'name' =>'PAUD',
+            ],
+            [
+                'id' => 'SLB',
+                'name' => 'SLB',
+            ],
+            [
+                'id' => 'Lembaga NonPemerintah',
+                'name' => 'Lembaga NonPemerintah'
+            ]
         ];
 
         return view('components.forms.select-category-instrument', compact('categories'));
