@@ -47,6 +47,7 @@
                 </div>
                 <div class="col-md-9">
                     <input class="form-control" value="{{ $data['institution']['library_name'] ?? '-' }}" disabled/>
+                    <input class="form-control" name="library_name" value="{{ $data['institution']['library_name'] ?? '-' }}" hidden/>
                 </div>
             </div>
             <div class="form-group row mb-2">
