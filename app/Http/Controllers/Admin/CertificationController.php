@@ -64,17 +64,57 @@ class CertificationController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
+
+        $form = [];
+        if ($request->hasFile('certificate_file')) {
+            $extension = $request->file('certificate_file')->getClientOriginalExtension();
+            $file = $request->file('certificate_file');
+            $form[] = [
+                'name' => 'certificate_file',
+                'contents' => fopen($file, 'r'),
+                'filename' => date('YmdHis') . '-' . $data['library_name'] . "." . $extension
+            ];
+
+            unset($data['certificate_file']);
+        }
+
+        if ($request->hasFile('recommendation_file')) {
+            $extension = $request->file('recommendation_file')->getClientOriginalExtension();
+            $file = $request->file('recommendation_file');
+            $form[] = [
+                'name' => 'recommendation_file',
+                'contents' => fopen($file, 'r'),
+                'filename' => date('YmdHis') . '-' . $data['library_name'] . "." . $extension
+            ];
+
+            unset($data['recommendation_file']);
+        }
+
         if (empty($data['certificate_sent_at'])) {
             unset($data['certificate_sent_at']);
         }
+        
+        foreach ($data as $key => $formdata) {
+            $form[] = [
+                'name' => $key,
+                'contents' => $formdata,
+            ];
+        }
 
+        $form[] = [
+            'name' => 'accreditation_id',
+            'contents' => $id
+        ];
+        
         $token = session('token.data.access_token');
 
         try {
-            $result = $this->admin->put($this->endpoint, $id, $data, [
-                'Authorization' => "Bearer " . $token
+            $result = $this->admin->postFileUpload($this->endpoint, $form, [
+                'Authorization' => "Bearer " . $token,
+                'user-agent' => $request->server('HTTP_USER_AGENT'),
+                'ip-address' => $request->ip()
             ]);
-
+            
             if ($result['success'] === true) {
                 session()->flash('success', $result['message']);
 
