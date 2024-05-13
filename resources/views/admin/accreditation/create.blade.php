@@ -189,17 +189,30 @@
             @elseif($fetchData['data'][0]['action_type'] == "proof")
                 <div class="form-group row mb-2">
                     <input type="hidden" value="{{ $fetchData['data'][0]['id'] }}" name="component_id">
-                    <h4>{{ $fetchData['meta']['current_page'] }}. {{ $fetchData['data'][0]['name'] }}</h4>
+                    <h4>{{ $fetchData['meta']['current_page'] }}. Bukti Fisik {{ $fetchData['data'][0]['name'] }}</h4>
                     <x-forms.input type="file" name="file_upload" accept=".zip,.rar,.pdf" required />
                     @if (!empty($fetchData['data'][0]['answers']))
                         <a class="btn btn-info col-2 mt-3" href="{{ $fetchData['data'][0]['answers'][0]['file'] }}">Download File</a>
                     @endif
+                    <span class="mt-2"><b>Note:</b></span>
+                    <small>Silahkan kompilasi seluruh bukti fisik menjadi satu file pdf dengan ukuran maksimal 10MB</small>
+                    <small>Jenis file : .zip,.rar,.pdf</small>
+                </div>
+	        @elseif($fetchData['data'][0]['action_type'] == "gdrive")
+                <div class="form-group row mb-2">
+                    <input type="hidden" value="{{ $fetchData['data'][0]['id'] }}" name="component_id">
+                    <h4>Link Google Drive Bukti Fisik</h4>
+                    <x-forms.input type="text" name="url" required />
+                    <span class="mt-2"><b>Note:</b></span>
+                    <small>Silahkan unggah seluruh file bukti fisik ke dalam folder google drive.</small>
                 </div>
             @elseif($fetchData['data'][0]['action_type'] == "video")
                 <div class="form-group row mb-2">
                     <input type="hidden" value="{{ $fetchData['data'][0]['id'] }}" name="component_id">
-                    <h4>Video Pendukung Perpustakaan</h4>
+                    <h4>Link YouTube Video Profil Perpustakaan</h4>
                     <x-forms.input type="text" name="url" required />
+		    <span class="mt-2"><b>Note:</b></span>
+	            <small>Silahkan unggah video perpustakaan ke Channel Youtube terlebih dahulu. Setelah itu, salin link video dan masukkan pada isian yang tersedia di atas.</small>
                 </div>
             @endif
             <div class="form-group row text-center">

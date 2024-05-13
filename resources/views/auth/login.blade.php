@@ -10,7 +10,7 @@
                         <div class="text-center text-md-center mb-4 mt-md-0">
                             <h1 class="mb-0 h3">Sign in to our platform</h1>
                         </div>
-                        <form action="{{ config('APP_URL') }}/login/store" class="mt-4" method="POST">
+                        <form action="{{ route('login.store') }}" class="mt-4" method="POST">
                             @csrf
                             <div class="form-group mb-4">
                                 <x-forms.label :label="__('Your Username')"/>

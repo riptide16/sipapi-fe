@@ -20,8 +20,7 @@ class AdminService
     {
         $this->client = new Client([
             'base_uri' => config('services.api.url'),
-	    'headers' => $this->getDefaultHeaders(),
-	    'verify' => false,
+            'headers' => $this->getDefaultHeaders(),
         ]);
     }
 
@@ -33,9 +32,9 @@ class AdminService
     public function getDefaultHeaders()
     {
         return [
-           'Content-Type' => 'application/json',
-           'client-user-agent' => request()->server('HTTP_USER_AGENT'),
-           'client-ip' => request()->ip()
+            'Content-Type' => 'application/json',
+            'client-user-agent' => request()->server('HTTP_USER_AGENT'),
+            'client-ip' => request()->ip()
         ];
     }
 

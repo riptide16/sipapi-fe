@@ -139,17 +139,8 @@
             <div class="shadow-md rounded-md bg-white w-full">
                 <div class="p-5">
                     <h5 style="text-align: center;" class="text-xl font-semibold mb-2 text-green-500">
-                        {{-- <span class="countfect" data-num="{{ $infographics['library'] }}"></span> --}}
-                        22
-                    </h5>
-                    <p style="text-align: center;" class="mb-4 text-green-500 text-lg">Perpustakaan Terdaftar</p>
-                </div>
-            </div>
-            <div class="shadow-md rounded-md bg-white w-full">
-                <div class="p-5">
-                    <h5 style="text-align: center;" class="text-xl font-semibold mb-2 text-green-500">
                         {{-- <span class="countfect" data-num="{{ $infographics['accreditationLibrary'] }}"></span> --}}
-                        4
+                        10.038
                     </h5>
                     <p style="text-align: center;" class="mb-4 text-green-500 text-lg">Perpustakaan Terakreditasi</p>
                 </div>
@@ -157,19 +148,28 @@
             <div class="shadow-md rounded-md bg-white w-full">
                 <div class="p-5">
                     <h5 style="text-align: center;" class="text-xl font-semibold mb-2 text-green-500">
-                        {{-- <span class="countfect" data-num="{{ $infographics['assessor'] }}"></span> --}}
-                        18
+                        {{-- <span class="countfect" data-num="{{ $infographics['predicateA'] }}"></span> --}}
+                        1.725
                     </h5>
-                    <p style="text-align: center;" class="mb-4 text-green-500 text-lg">Asesor</p>
+                    <p style="text-align: center;" class="mb-4 text-green-500 text-lg">Predikat A</p>
                 </div>
             </div>
             <div class="shadow-md rounded-md bg-white w-full">
                 <div class="p-5">
                     <h5 style="text-align: center;" class="text-xl font-semibold mb-2 text-green-500">
-                        {{-- <span class="countfect" data-num="{{ $infographics['predicateA'] }}"></span> --}}
-                        5
+                        
+                        1.768
                     </h5>
-                    <p style="text-align: center;" class="mb-4 text-green-500 text-lg">Predikat A</p>
+                    <p style="text-align: center;" class="mb-4 text-green-500 text-lg">Predikat B</p>
+                </div>
+            </div>
+            <div class="shadow-md rounded-md bg-white w-full">
+                <div class="p-5">
+                    <h5 style="text-align: center;" class="text-xl font-semibold mb-2 text-green-500">
+                        
+                        6.545
+                    </h5>
+                    <p style="text-align: center;" class="mb-4 text-green-500 text-lg">Predikat C</p>
                 </div>
             </div>
         </div>
@@ -177,6 +177,34 @@
     <div class="mt-10 h-10"></div>
 </div>
 
+<!-- <div class="mx-auto px-5 mt-15 h-full">
+	<div class="margin-100">
+        <div class="flex justify-between">
+            <div>
+                <h6 class="lg:text-3xl mb-10 text-green-600">Profil Asesor</h6>
+            </div>
+            <div>
+                <h6 class="lg:text-2xl mb-10 text-green-600">
+                    <a class="ml-4" href="{{ route('tentang-kami.asesor') }}" aria-label="Asesor">
+                        Lihat Semua
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </h6>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-4 gap-5 grid-flow-row">
+            @foreach ($assessors['data'] as $item)
+                <div class="w-full flex flex-col">
+                    <img class="w-full h-full lg:w-full rounded-lg object-cover shadow-xl mb-4" src="{{ !empty($item['profile_picture']) ? $item['profile_picture'] : asset('images/no-photo.png') }}" alt="Asesor">
+                    <div class="text-center">
+                        <h5 class="text-xs md:text-lg lg:text-lg font-semibold mb-2">{{ strtoupper($item['name']) }}</h5>
+                        <small class="text-gray-400">{{ $item['region']['name'] ?? '' }}</small>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div> -->
 
 @if (!empty($videos['data']))
 <div class="mx-auto px-5 mt-20 h-full bg-gray-200">

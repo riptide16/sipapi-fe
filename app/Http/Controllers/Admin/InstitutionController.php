@@ -35,24 +35,18 @@ class InstitutionController extends Controller
         $token = session('token.data.access_token');
         $role = session()->get('user.data.role.name');
         $dataFilter = $request->all();
-        // dd($dataFilter);
         $dataFilter1=array('datatype'=>'request');
         // dd($dataFilter1);
         if($dataFilter===$dataFilter1 || $dataFilter===[]){
             
-        $dataFilter=array('status'=>'menunggu_verifikasi');
+            $dataFilter=array('status'=>'menunggu_verifikasi');
       
         }
-       
         $dataFilter['datatype'] = $request->datatype ?? 'request';
-        // dd($dataFilter);
-        
-        
         if ($role == 'asesi') {
             $fetchDataInstitution = $this->admin->getAll($this->endpointInstutionAssessee, $dataFilter, [
                 'Authorization' => "Bearer " . $token
             ]);
-           
 
             if (!empty($fetchDataInstitution['data']['status']) && $fetchDataInstitution['data']['status'] == 'tidak_valid') {
                 session()->flash('invalid_institution', true);
@@ -73,7 +67,6 @@ class InstitutionController extends Controller
             $fetchDataInstitution = $this->admin->getAll($this->endpointInstitution, $dataFilter, [
                 'Authorization' => "Bearer " . $token
             ]);
-            // dd($fetchDataInstitution);
 
             if (isset($fetchDataInstitution['code']) && $fetchDataInstitution['code'] == 'ERR4001') {
                 return redirect()->route('logout');
@@ -163,13 +156,15 @@ class InstitutionController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-
+        // dd($data);
         $token = session('token.data.access_token');
+
 
         try {
             $user = $this->admin->storeInstitution('admin/self/institution', $data, [
                 'Authorization' => "Bearer " . $token
             ]);
+            dd($user);
 
             if ($user['success'] == true) {
                 session()->flash('success', $user['message']);

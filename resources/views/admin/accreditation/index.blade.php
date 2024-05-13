@@ -42,6 +42,8 @@
                         <th class="border-0">Alamat</th>
                         <th class="border-0">Tanggal Ajuan</th>
                         <th class="border-0">Status</th>
+                        <th class="border-0">Asesor 1</th>
+                        <th class="border-0">Asesor 2</th>
                         <th class="border-0">Aksi</th>
                     </tr>
                 </thead>
@@ -64,6 +66,8 @@
                             <td>{{ $data['institution']['address'] }}</td>
                             <td>{{ \Helper::formatDate($data['created_at'], 'Y-m-d') }}</td>
                             <td>{{ \Helper::titlize($data['appealed_at'] ? 'banding' : $data['status']) }}</td>
+                            <td><x-forms.label :label="$data['assignments'][0]['assessors'][0]['name'] ?? '-'" /></td>
+                            <td><x-forms.label :label="$data['assignments'][0]['assessors'][1]['name'] ?? '-'" /></td>
                             <!-- <td>{{ \Helper::titlize($data['appealed_at'] ? 'banding' : $data['status']) }}</td> -->
                             <td>
                                 @include('components.general-actions-resource', [

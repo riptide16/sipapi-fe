@@ -49,7 +49,46 @@
     <div class="card-body">
         @if (!empty($fetchData['data']))
         <form action="{{ route('admin.penilaian.save', [$id]) }}" method="POST" enctype="multipart/form-data">
+            <ul class="nav navbtn nav-justified mb-5" style="border: none;">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id]) }}">Komponen 1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id, 'page=2']) }}">Komponen 2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id, 'page=3']) }}">Komponen 3</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id, 'page=4']) }}">Komponen 4</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id, 'page=5']) }}">Komponen 5</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id, 'page=6']) }}">Komponen 6</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id, 'page=7']) }}">Komponen 7</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id, 'page=8']) }}">Komponen 8</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.penilaian.evaluate', [$id, 'page=9']) }}">Komponen 9</a>
+                </li>
+            </ul>
+            <hr>
             @csrf
+            <div class="form-group mb-5">
+                <div class="col-md-12">
+                    <br>
+                    @if(!empty($fetchData['links']['prev']))
+                        <x-buttons.prev :href="route('admin.penilaian.evaluate', ['penilaian' => $id, 'page' => $fetchData['meta']['current_page'] - 1])"/>
+                    @endif
+                    <x-buttons.save :title="__($fetchData['links']['next'] ? 'Simpan' : 'Proses')"/>
+                </div>
+            </div>
             @php
                 $aspectNo = 1;
             @endphp
@@ -79,25 +118,28 @@
                                         @endforeach
                                     </select>
                                 </div>
-
+                                @php $index = 'A'; @endphp
                                 @foreach ($multiChildAspect['points'] as $key3 => $point)
                                     <div class="col-md-9 mb-1 position-relative">
                                         @if (!empty($dataAspect['answers']))
                                             <input type="hidden" name="contents[{{ $dataAspect['id'] }}]" value="{{ $dataAspect['answers'][0]['id'] }}" />
                                             @if ($point['id'] == $dataAspect['answers'][0]['instrument_aspect_point_id'])
                                                 <input type="radio" disabled checked style="position: absolute;z-index:1000;top: 11px;left: 10px;">
+                                                <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }}. {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }} background-color: #313131; font-weight: bold; color: white;" disabled/>
                                             @else
                                                 <input type="radio" disabled style="position: absolute;z-index:1000;top: 11px;left: 10px;">
+                                                <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }} {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                             @endif
                                         @endif
-                                        <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                     </div>
+                                    @php $index++; @endphp
                                 @endforeach
                             @endif
+                            <br>
                         @endforeach
                     @endif
                     @if (!empty($dataAspect['points']))
-                        <br><h5 style="margin-bottom: -10px;margin-top: -20px;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
+                        <br><h5 style="margin-bottom: -10px;margin-top: -20px; white-space: pre;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
 
                         <div class="evaluation position-absolute end-0" style="min-width:130px">
                             <h5>Nilai Aspek</h5>
@@ -112,20 +154,24 @@
                             </select>
                         </div>
 
+                        @php $index = 'A'; @endphp
                         @foreach ($dataAspect['points'] as $key3 => $point)
                             <div class="col-md-9 mb-1">
                                 @if (!empty($dataAspect['answers']))
                                     <input type="hidden" name="contents[{{ $dataAspect['id'] }}]" value="{{ $dataAspect['answers'][0]['id'] }}" />
                                     @if ($point['id'] == $dataAspect['answers'][0]['instrument_aspect_point_id'])
                                         <input type="radio" disabled checked style="position: relative;z-index:1000;top: 7px;left: 10px;">
+                                        <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }}. {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }} background-color: #313131; font-weight: bold; color: white;" disabled/>
                                     @else
                                         <input type="radio" disabled style="position: relative;z-index:1000;top: 7px;left: 10px;">
+                                        <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }}. {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($dataAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                     @endif
                                 @endif
-                                <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($dataAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                             </div>
+                            @php $index++; @endphp
                         @endforeach
                     @endif
+                    <br>
                 @endforeach
                 @foreach ($data['children'] ?? [] as $key => $data1)
                     <h4>
@@ -134,10 +180,10 @@
                     @foreach ($data1['aspects'] as $dataAspect)
                         <input type="hidden" name="aspects[]" value="{{ $dataAspect['id'] }}" />
                         @if ($dataAspect['type'] == 'multi_aspect')
-                            <br><h5 style="margin-bottom: -10px;margin-top: -20px;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
+                            <br><h5 style="margin-bottom: -10px;margin-top: -20px; white-space: pre;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
                             @foreach ($dataAspect['children'] as $multiChildAspect)
                                 @if (!empty($multiChildAspect['points']))
-                                    <br><h5 style="margin-bottom: -10px;margin-top: -20px;">{{ $multiChildAspect['aspect'] }}</h5><br>
+                                    <br><h5 style="margin-bottom: -10px;margin-top: -20px; white-space: pre;">{{ $multiChildAspect['aspect'] }}</h5><br>
 
                                     <div class="evaluation position-absolute end-0" style="min-width:130px">
                                         <h5>Nilai Aspek</h5>
@@ -151,25 +197,28 @@
                                             @endforeach
                                         </select>
                                     </div>
-
+                                    @php $index = 'A'; @endphp
                                     @foreach ($multiChildAspect['points'] as $key3 => $point)
                                         <div class="col-md-9 mb-1 position-relative">
                                             @if (!empty($dataAspect['answers']))
                                                 <input type="hidden" name="contents[{{ $dataAspect['id'] }}]" value="{{ $dataAspect['answers'][0]['id'] }}" />
                                                 @if ($point['id'] == $dataAspect['answers'][0]['instrument_aspect_point_id'])
                                                     <input type="radio" disabled checked style="position: absolute;z-index:1000;top: 11px;left: 10px;">
+                                                    <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }}. {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }} background-color: #313131; font-weight: bold; color: white;" disabled/>
                                                 @else
                                                     <input type="radio" disabled style="position: absolute;z-index:1000;top: 11px;left: 10px;">
+                                                    <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }}. {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                                 @endif
                                             @endif
-                                            <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                         </div>
+                                        @php $index++; @endphp
                                     @endforeach
                                 @endif
+                                <br>
                             @endforeach
                         @endif
                         @if (!empty($dataAspect['points']))
-                            <br><h5 style="margin-bottom: -10px;margin-top: -20px;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
+                            <br><h5 style="margin-bottom: -10px;margin-top: -20px; white-space: pre;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
 
                             <div class="evaluation position-absolute end-0" style="min-width:130px">
                                 <h5>Nilai Aspek</h5>
@@ -184,20 +233,24 @@
                                 </select>
                             </div>
 
-                            @foreach ($dataAspect['points'] as $key3 => $point)
-                                <div class="col-md-9 mb-1">
-                                    @if (!empty($dataAspect['answers']))
-                                        <input type="hidden" name="contents[{{ $dataAspect['id'] }}]" value="{{ $dataAspect['answers'][0]['id'] }}" />
-                                        @if ($point['id'] == $dataAspect['answers'][0]['instrument_aspect_point_id'])
-                                            <input type="radio" disabled checked style="position: relative;z-index:1000;top: 7px;left: 10px;">
-                                        @else
-                                            <input type="radio" disabled style="position: relative;z-index:1000;top: 7px;left: 10px;">
+                                @php $index = 'A'; @endphp
+                                @foreach ($dataAspect['points'] as $key3 => $point)
+                                    <div class="col-md-9 mb-1">
+                                        @if (!empty($dataAspect['answers']))
+                                            <input type="hidden" name="contents[{{ $dataAspect['id'] }}]" value="{{ $dataAspect['answers'][0]['id'] }}" />
+                                            @if ($point['id'] == $dataAspect['answers'][0]['instrument_aspect_point_id'])
+                                                <input type="radio" disabled checked style="position: relative;z-index:1000;top: 7px;left: 10px;">
+                                                <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }} {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($dataAspect['answers']) ? 'margin-top: -24px' : '' }}; background-color: #313131; font-weight: bold; color: white;" disabled/>
+                                            @else
+                                                <input type="radio" disabled style="position: relative;z-index:1000;top: 7px;left: 10px;">
+                                                <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }}. {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($dataAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
+                                            @endif
                                         @endif
-                                    @endif
-                                    <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($dataAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
-                                </div>
-                            @endforeach
-                        @endif
+                                    </div>
+                                    @php $index++; @endphp
+                                @endforeach
+                            @endif
+                            <br>
                     @endforeach
                     @foreach ($data1['children'] as $key2 => $data2)
                         {{-- <br><h5>{{ $data2['name'] }}</h5> --}}
@@ -205,10 +258,10 @@
                         @foreach ($data2['aspects'] as $dataAspect)
                             <input type="hidden" name="aspects[]" value="{{ $dataAspect['id'] }}" />
                             @if ($dataAspect['type'] == 'multi_aspect')
-                                <br><h5 style="margin-bottom: -10px;margin-top: -20px;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
+                                <br><h5 style="margin-bottom: -10px;margin-top: -20px; white-space: pre;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
                                 @foreach ($dataAspect['children'] as $multiChildAspect)
                                     @if (!empty($multiChildAspect['points']))
-                                        <br><h5 style="margin-bottom: -10px;margin-top: -20px;">{{ $multiChildAspect['aspect'] }}</h5><br>
+                                        <br><h5 style="margin-bottom: -10px;margin-top: -20px; white-space: pre;">{{ $multiChildAspect['aspect'] }}</h5><br>
 
                                         <div class="evaluation position-absolute end-0" style="min-width:130px">
                                             <h5>Nilai Aspek</h5>
@@ -222,25 +275,28 @@
                                                 @endforeach
                                             </select>
                                         </div>
-
+                                        @php $index = 'A'; @endphp
                                         @foreach ($multiChildAspect['points'] as $key3 => $point)
                                             <div class="col-md-9 mb-1 position-relative">
                                                 @if (!empty($dataAspect['answers']))
                                                     <input type="hidden" name="contents[{{ $dataAspect['id'] }}]" value="{{ $dataAspect['answers'][0]['id'] }}" />
                                                     @if ($point['id'] == $dataAspect['answers'][0]['instrument_aspect_point_id'])
                                                         <input type="radio" disabled checked style="position: absolute;z-index:1000;top: 11px;left: 10px;">
+                                                        <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }} {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }} background-color: #313131; font-weight: bold; color: white;" disabled/>
                                                     @else
                                                         <input type="radio" disabled style="position: absolute;z-index:1000;top: 11px;left: 10px;">
+                                                        <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }} {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                                     @endif
                                                 @endif
-                                                <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($multiChildAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                             </div>
+                                            @php $index++; @endphp
                                         @endforeach
                                     @endif
+                                    <br>
                                 @endforeach
                             @endif
                             @if (!empty($dataAspect['points']))
-                                <br><h5 style="margin-bottom: -10px;margin-top: -20px;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
+                                <br><h5 style="margin-bottom: -10px;margin-top: -20px; white-space: pre;">{{ $aspectNo++.'. '.$dataAspect['aspect'] }}</h5><br>
 
                                 <div class="evaluation position-absolute end-0" style="min-width:130px">
                                     <h5>Nilai Aspek</h5>
@@ -255,20 +311,24 @@
                                     </select>
                                 </div>
 
+                                @php $index = 'A'; @endphp
                                 @foreach ($dataAspect['points'] as $key3 => $point)
                                     <div class="col-md-9 mb-1">
                                         @if (!empty($dataAspect['answers']))
                                             <input type="hidden" name="contents[{{ $dataAspect['id'] }}]" value="{{ $dataAspect['answers'][0]['id'] }}" />
                                             @if ($point['id'] == $dataAspect['answers'][0]['instrument_aspect_point_id'])
                                                 <input type="radio" disabled checked style="position: relative;z-index:1000;top: 7px;left: 10px;">
+                                                <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }} {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($dataAspect['answers']) ? 'margin-top: -24px' : '' }}; background-color: #313131; font-weight: bold; color: white;" disabled/>
                                             @else
                                                 <input type="radio" disabled style="position: relative;z-index:1000;top: 7px;left: 10px;">
+                                                <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $index }}. {{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($dataAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                             @endif
                                         @endif
-                                        <x-forms.input name="opsi[{{ $key3 }}]" value="{{ $point['statement'] }}" style="padding-left: 30px;{{ !empty($dataAspect['answers']) ? 'margin-top: -24px' : '' }};" disabled/>
                                     </div>
+                                    @php $index++; @endphp
                                 @endforeach
                             @endif
+                            <br>
                         @endforeach
                     @endforeach
                 @endforeach
@@ -287,7 +347,7 @@
                 @if(!empty($fetchData['links']['prev']))
                     <x-buttons.prev :href="route('admin.penilaian.evaluate', ['penilaian' => $id, 'page' => $fetchData['meta']['current_page'] - 1])"/>
                 @endif
-                <x-buttons.save :title="__($fetchData['links']['next'] ? 'Next' : 'Proses')"/>
+                <x-buttons.save :title="__($fetchData['links']['next'] ? 'Simpan' : 'Proses')"/>
             </div>
         </div>
     </div>

@@ -106,14 +106,21 @@
             <form action="{{ route('admin.penilaian.finalize', [$result['evaluation']['id']]) }}" class="pt-3" method="POST" enctype="multipart/form-data">
                 @csrf
                 <h5>Rekomendasi</h5>
+                @php $index = 0; @endphp
                 @foreach ($result['results'] as $recommendation)
-                    <div class="form-group row mb-2">
+                    <div class="form-group row mb-5">
                         <div class="col-md-3">
                             <x-forms.label :label="__('Komponen '.$recommendation['instrument_component'])"/>
                         </div>
+                        @if(isset($result['evaluation']['recommendations'][$index]['content']))
                         <div class="col-md-9">
-                            <x-forms.input name="recommendations[{{ $recommendation['instrument_component_id'] }}]" value="" style="border-color: #777" required/>
+                            <textarea class="form-control" name="recommendations[{{ $recommendation['instrument_component_id'] }}]" style="border-color: #777; min-height: 7.5em;" required>{{ $index++ }}</textarea>
                         </div>
+                        @else
+                        <div class="col-md-9">
+                            <textarea class="form-control" name="recommendations[{{ $recommendation['instrument_component_id'] }}]" style="border-color: #777; min-height: 7.5em;" required></textarea>
+                        </div>
+                        @endif
                     </div>
                 @endforeach
                 <div class="form-group row mt-2 mb-2">

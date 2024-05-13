@@ -34,7 +34,6 @@ class CertificationController extends Controller
         }
         
         $index = 0;
-
         foreach($fetchData["data"] as $row){
             if($row["certificate_file"]){
                 $fetchData["data"][$index]["certificate_file"] = url("/storage_files/secure") . "/" . $row["certificate_file"];
@@ -57,7 +56,14 @@ class CertificationController extends Controller
         ]);
 
         $data = $fetchData['data'];
+        if($data["certificate_file"]){
+            $data["certificate_file"] = url("/storage_files/secure") . "/" . $data["certificate_file"];
+        }
 
+        if($data["recommendation_file"]){
+            $data["recommendation_file"] = url("/storage_files/secure") . "/" . $data["recommendation_file"];
+        }
+        
         return view('admin.certifications.edit', compact('data'));
     }
 

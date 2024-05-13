@@ -36,7 +36,8 @@ class RegisterController extends Controller
         $data['role_name'] = 'asesi';
 
         $register = $this->admin->createNew($this->endpoint, $data);
-	
+        dd($register);
+
         if ($register['success'] == true) {
             session()->flash('success_title', 'Akun berhasil dibuat');
             session()->flash('success', 'Silakan cek email Anda untuk melakukan aktivasi');

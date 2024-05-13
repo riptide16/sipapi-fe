@@ -15,9 +15,9 @@
         </nav>
         <h2 class="h4">Data Role</h2>
     </div>
-    {{-- <div class="btn-toolbar mb-2 mb-md-0">
-        <x-buttons.create :href="route('admin.roles.create')" :title="__('Role')" />
-    </div> --}}
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <x-buttons.create :href="route('admin.role.create')" :title="__('Role')" />
+    </div>
 </div>
 <div class="card border-0 shadow mb-4">
     <div class="card-body">
@@ -42,7 +42,7 @@
                             <td>{{ $data['display_name'] }}</td>
                             {{-- <td>
                                 @include('components.general-actions', [
-                                    'route' => 'admin.roles',
+                                    'route' => 'admin.role',
                                     'id' => $data['id'],
                                     'actions' => [
                                         'edit' => true,

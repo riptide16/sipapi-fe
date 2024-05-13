@@ -1,5 +1,12 @@
 @push('js')
     <script>
+        $('#telephone_number, #mobile_number').on('keypress', function(e){
+	    return e.metaKey || // cmd/ctrl
+            e.which <= 0 || // arrow keys
+            e.which == 8 || // delete key
+            /[0-9]/.test(String.fromCharCode(e.which)); // numbers
+        })
+
         function addWorker() {
             let clone = $('.library_worker_name').first().clone();
             clone.val('');
@@ -46,7 +53,12 @@
                 $('#'+target).empty()
                 $('#'+target).append('<option value="">-- Please Select --</option>')
                 $.each(result.data, function (key, value) {
-                    $('#'+target).append('<option value="'+ value.id + '">'+ value.name + '</option>')
+                    if(target == "city_id" && value.type == "Kabupaten"){
+                        $('#'+target).append('<option value="'+ value.id + '">'+ "Kab. "+ value.name + '</option>')
+                    }
+                    else{
+                        $('#'+target).append('<option value="'+ value.id + '">'+ value.name + '</option>')
+                    }
                 });
             }).fail(() => {
                 $('#'+target).append('<option value="999999">error</option>')

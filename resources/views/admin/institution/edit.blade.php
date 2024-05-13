@@ -52,7 +52,7 @@
                     <x-forms.label :label="__('NPP')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-forms.input name="npp" value="{{ $data['npp'] }}" />
+                    <x-forms.input name="npp" value="{{ $data['npp'] }}" required/>
                 </div>
             </div>
             <div class="form-group row mb-2">
@@ -63,7 +63,7 @@
                     <x-forms.input name="agency_name" value="{{ $data['agency_name'] }}"  required/>
                 </div>
             </div>
-            <div class="form-group row mb-2" id="typology">
+            <div class="form-group row mb-2" id="typology" style="display:none">
                 <div class="col-md-3">
                     <x-forms.label :label="__('Tipologi Perpustakaan')"/>
                 </div>
@@ -151,7 +151,7 @@
                     <x-forms.label :label="__('Nomor Telepon')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-forms.input name="telephone_number" value="{{ $data['telephone_number'] }}" />
+                    <x-forms.input name="telephone_number" value="{{ $data['telephone_number'] }}" required/>
                 </div>
             </div>
             <div class="form-group row mb-2">
@@ -159,7 +159,7 @@
                     <x-forms.label :label="__('Nomor Ponsel')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-forms.input name="mobile_number" value="{{ $data['mobile_number'] }}"/>
+                    <x-forms.input name="mobile_number" value="{{ $data['mobile_number'] }}" required/>
                 </div>
             </div>
             <div class="form-group row mb-2">

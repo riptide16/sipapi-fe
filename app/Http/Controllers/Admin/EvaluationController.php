@@ -16,6 +16,7 @@ class EvaluationController extends Controller
     {
         $this->endpoint = 'admin/evaluations';
         $this->endpointAccreditation = 'admin/accreditations';
+        $this->endpointExport = 'admin/exports';
         $this->secureEndpoint = 'storage_files';
         $this->admin = $admin;
     }
@@ -54,10 +55,12 @@ class EvaluationController extends Controller
         }
 
         $assignment = session('token.assignment_'.$id);
+
         if (!$assignment) {
             $assignments = $this->admin->getById($this->endpointAccreditation, $id."/evaluation_assignments", [], [
                 'Authorization' => "Bearer " . $token
             ]);
+            
             if (!empty($assignments['data'])) {
                 $assignment = $assignments['data'][0];
                 session(['token.assignment_'.$id => $assignment]);
@@ -66,7 +69,18 @@ class EvaluationController extends Controller
 
         $setFetchDataEvaluation = session(['getFetchDataEvaluation' => $fetchData]);
 
-        return view('admin.evaluations.show', compact('fetchData', 'id', 'assignment'));
+	    $accreditation = $this->admin->getByID($this->endpointAccreditation, $id, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+
+        $result = $accreditation['data'];
+        usort($result['results'], fn($a, $b) => $a['instrument_component_id'] <=> $b['instrument_component_id']);
+
+        $finalResult = $accreditation['data']['finalResult']['score'];
+
+        $setFetchDataEvaluation = session(['getFetchDataEvaluation' => $fetchData]);
+
+        return view('admin.evaluations.show', compact('fetchData', 'id', 'assignment','finalResult','result'));
     }
 
     public function evaluate($id, Request $request)
@@ -82,12 +96,13 @@ class EvaluationController extends Controller
         if (isset($fetchData['code']) && $fetchData['code'] == 'ERR4001') {
             return redirect()->route('logout');
         }
-
+        
         return view('admin.evaluations.evaluate', compact('fetchData', 'id'));
     }
 
     public function save($id, Request $request)
     {
+        
         if ($request->get('action_type') == 'choice' && $request->has('aspects')) {
             $param = [
                 'accreditation_id' => $id,
@@ -127,6 +142,7 @@ class EvaluationController extends Controller
         $result = $this->admin->getByID($this->endpointAccreditation, $id, [], [
             'Authorization' => "Bearer " . $token
         ]);
+        // dd($result);
         if (isset($result['code']) && $result['code'] == 'ERR4001') {
             return redirect()->route('logout');
         }
@@ -145,6 +161,9 @@ class EvaluationController extends Controller
         $result = $result['data'];
         $assignment = $assignments['data'][0];
 
+        usort($result['evaluation']['evaluation_result'], fn($a, $b) => $a['instrument_component_id'] <=> $b['instrument_component_id']);
+        usort($result['results'], fn($a, $b) => $a['instrument_component_id'] <=> $b['instrument_component_id']);
+        // dd($result['evaluation']['recommendations'][0]['content']);
         return view('admin.evaluations.result', compact('result', 'assignment', 'id'));
     }
 
@@ -170,6 +189,7 @@ class EvaluationController extends Controller
         $result = $this->admin->formData($this->endpoint . '/' . $id . '/' . 'document_file', $form, [
             'Authorization' => "Bearer " . $token
         ]);
+        
         if ($result['success']) {
             $download = $this->admin->getById($this->endpoint, $id."/download_document", [], [
                 'Authorization' => "Bearer " . $token
@@ -194,7 +214,7 @@ class EvaluationController extends Controller
     public function uploadDocument(Request $request, $id)
     {
         $request->validate([
-            'file' => 'required|file|max:2048|mimes:doc,docx,pdf',
+            'file' => 'required|file|max:2048|mimes:doc,docx,pdf,xlsx',
         ]);
         $data = $request->all();
 
@@ -245,6 +265,9 @@ class EvaluationController extends Controller
         $result = $result['data'];
         $assignment = $assignments['data'][0];
 
+        usort($result['evaluation']['evaluation_result'], fn($a, $b) => $a['instrument_component_id'] <=> $b['instrument_component_id']);
+        usort($result['evaluation']['recommendations'], fn($a, $b) => $a['component_id'] <=> $b['component_id']);
+
         return view('admin.evaluations.recap', compact('result', 'assignment', 'id'));
     }
 
@@ -265,6 +288,54 @@ class EvaluationController extends Controller
             'Authorization' => "Bearer " . $token
         ], 'instruments');
 
-        return view('admin.evaluations.download-file', compact('id', 'fetchData', 'fetchDataVideo'));
+        $fetchDataGdrive = $this->admin->getByID($this->endpointAccreditation, $id, [
+            'page' => 1,
+            'type' => 'gdrive'
+        ], [
+            'Authorization' => "Bearer " . $token
+        ], 'instruments');
+
+        return view('admin.evaluations.download-file', compact('id', 'fetchData', 'fetchDataVideo', 'fetchDataGdrive'));
+    }
+
+    public function showInstitution($id)
+    {
+        $token = session('token.data.access_token');
+        $fetchDataInstitution = $this->admin->getById($this->endpoint, $id."/show_institution", [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+	
+        return view('admin.evaluations.show-institution', compact('id','fetchDataInstitution'));
+    }
+
+    public function exportOnthespot($id)
+    {   
+        $token = session('token.data.access_token');
+        $today = now()->format('Ymd');
+
+        $accreditation = $this->admin->getByID($this->endpointAccreditation, $id, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+        return $this->export($this->endpointExport . '/export_onthespot', $today . " - ". $accreditation['data']['institution']['library_name'].'.xlsx', ['id' => $id]);
+    }
+
+    private function export($endpoint, $filename, $args = [])
+    {
+        $querystr = http_build_query(array_merge($args));
+        $token = session('token.data.access_token');
+        
+        $file = $this->admin->downloadFile($endpoint.'?'.$querystr, [
+            'Authorization' => "Bearer " . $token
+        ]);
+
+        if ($this->admin->getResponse()->getStatusCode() !== 200) {
+            abort($this->admin->getResponse()->getStatusCode());
+        }
+
+        $name = \Str::random(32) . '.xlsx';
+        $path = storage_path($name);
+        file_put_contents($path, $file);
+
+        return response()->download($path, $filename)->deleteFileAfterSend(true);
     }
 }

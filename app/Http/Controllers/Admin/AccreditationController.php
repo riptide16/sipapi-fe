@@ -12,6 +12,7 @@ class AccreditationController extends Controller
 {
     public $endpoint;
     public $endpointInstrument;
+    public $endpointCountInstrument;
     private $admin;
     public function __construct(AdminService $admin)
     {
@@ -19,10 +20,11 @@ class AccreditationController extends Controller
         $this->admin = $admin;
 
         $this->endpointInstrument = 'admin/self/instrument';
+        $this->endpointCountInstrument = 'admin/instrument';
     }
 
     public function index(Request $request)
-    {
+    {   
         try {
             $token = session('token.data.access_token');
             $fetchData = $this->admin->getAll($this->endpoint, ['per_page' => -1], [
@@ -31,11 +33,9 @@ class AccreditationController extends Controller
                 'ip-address' => $request->ip()
             ]);
 
-
             if (isset($fetchData['code']) && $fetchData['code'] == 'ERR4001') {
                 return redirect()->route('logout');
             }
-
             return view('admin.accreditation.index', compact('fetchData'));
         } catch (HttpException $th) {
             if ($th->getStatusCode() == 403) {
@@ -67,11 +67,20 @@ class AccreditationController extends Controller
             return redirect()->route('logout');
         }
 
+	$accreditationData = $this->admin->getByID($this->endpoint, $id, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+
+        $result = $accreditationData['data'];
+        usort($result['results'], fn($a, $b) => $a['instrument_component_id'] <=> $b['instrument_component_id']);
+        $finalResult = $accreditationData['data']['finalResult']['score'];
+
+
         $status = $request->status ?? null;
         $accreditation = $fetchData['data'][0]['accreditation'] ?? null;
         $setFetchDataAccreditation = session(['getFetchDataAccreditation' => $fetchData]);
 
-        return view('admin.accreditation.show', compact('fetchData', 'id', 'status', 'accreditation', 'fetchDataVideo'));
+        return view('admin.accreditation.show', compact('fetchData', 'id', 'status', 'accreditation', 'fetchDataVideo','finalResult','result'));
     }
 
     public function create(Request $request)
@@ -83,11 +92,11 @@ class AccreditationController extends Controller
         $fetchData = $this->admin->getAll($this->endpointInstrument . "?page=" . $page, [], [
             'Authorization' => "Bearer " . $token
         ]);
-
+        
         if (isset($fetchData['code']) && $fetchData['code'] == 'ERR4001') {
             return redirect()->route('logout');
         }
-
+        
         return view('admin.accreditation.create', compact('fetchData', 'type'));
     }
 
@@ -125,10 +134,11 @@ class AccreditationController extends Controller
                 if (!isset($data['next']) && empty($data['next'])) {
                     $accreditation = $this->getIncompleteAccreditation();
                     return $this->finalize($accreditation['id']);
-                } else {
+                } else { 
                     return redirect()->route('admin.akreditasi.create', ['type' => $data['type'], 'page' => $data['next']]);
                 }
             }
+
             $extension = $request->file('file_upload')->getClientOriginalExtension();
             $output[] = [
                 'name' => 'contents[0][file_upload]',
@@ -213,11 +223,32 @@ class AccreditationController extends Controller
 
     public function finalize($id)
     {
+
+        $token = session('token.data.access_token');
+
+        //  Jumlah isian Instrumen yang sudah dijawab Asesi
+	    $accreditationData = $this->admin->getByID($this->endpoint, $id, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+
+
+        // Menghitung Jumlah isian Instrumen sama dengan jumlah IK Instrumen atau tidak
+        $category = $accreditationData["data"]["institution"]["category"];
+        
+        $countInstrument = $this->admin->getByID($this->endpointCountInstrument, $category, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+        
+        if ($accreditationData['data']['finalResult']['total_instrument'] != $countInstrument) {
+            session()->flash('error', 'Mohon maaf isian Instrumen belum lengkap. Silahkan Cek Kembali.');
+
+            return redirect()->back();
+        }
+
         $data = [
             'is_finalized' => true,
         ];
 
-        $token = session('token.data.access_token');
         $result = $this->admin->createNew($this->endpoint . '/' . $id . '/' . 'finalize', $data, [
             'Authorization' => "Bearer " . $token
         ]);
@@ -243,12 +274,15 @@ class AccreditationController extends Controller
         if (isset($fetchData['code']) && $fetchData['code'] == 'ERR4001') {
             return redirect()->route('logout');
         }
+        
 
         $fetchData = $fetchData['data'];
         if ($fetchData['status'] == 'belum_lengkap') {
             abort(404);
         }
+        
         $readOnly = $fetchData['status'] != 'diajukan';
+        
         return view('admin.accreditation.verify', compact('fetchData', 'readOnly'));
     }
 
@@ -351,7 +385,15 @@ class AccreditationController extends Controller
             'Authorization' => "Bearer " . $token
         ], 'instruments');
 
-        return view('admin.accreditation.download-file', compact('fetchData', 'fetchDataVideo'));
+        $fetchDataGdrive = $this->admin->getByID($this->endpoint, $id, [
+            'page' => 1,
+            'type' => 'gdrive'
+        ], [
+            'Authorization' => "Bearer " . $token
+        ], 'instruments');
+
+
+        return view('admin.accreditation.download-file', compact('fetchData', 'fetchDataVideo','fetchDataGdrive'));
     }
 
     public function accept(Request $request, $id)

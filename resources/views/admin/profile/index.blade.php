@@ -53,6 +53,16 @@
                         <x-forms.select-region name="region_id" :placeholder="__('Wilayah')" :fill="$user['region']['id'] ?? __('')" required/>
                     </div>
                 </div>
+                @if (\Helper::isProvince())
+                <div class="form-group row mb-2">
+                    <div class="col-md-3">
+                        <x-forms.label :label="__('Provinsi Asal')"/>
+                    </div>
+                    <div class="col-md-9">
+                        <x-forms.select-province name="province_id" :placeholder="__('Provinsi')" :fill="$user['province']['id'] ?? __('')" required/>
+                    </div>
+                </div>
+                @endif
             @endif
             @if (\Helper::isAsesor())
                 <div class="form-group row mb-2">

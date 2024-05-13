@@ -34,6 +34,7 @@
                     <tr>
                         <th class="border-0 rounded-start" style="width: 10px">No</th>
                         <th class="border-0">Aspect</th>
+                        <th class="border-0">Points</th>
                         <th class="border-0">Type</th>
                         <th class="border-0">Aksi</th>
                     </tr>
@@ -45,23 +46,42 @@
                     @forelse ($fetchData['data'] as $data)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td>{!! wordwrap($data['aspect'], 40, "<wbr>", true); !!}</td>
+                            <td style="white-space: pre;">{!! wordwrap($data['aspect'], 40, "<wbr>", true); !!}</td>
+                            <td>
+                                @foreach ($data['points'] as $point)
+                                    {!! $point['statement'] !!} <br>
+                                @endforeach
+                            </td>
                             <td>{{ $data['type'] }}</td>
                             <td style="width: 200px">
-                                @include('components.general-actions-resource', [
-                                    'route' => 'admin.instrumen.aspects',
-                                    'id' => $data['id'],
-                                    'model' => 'aspect',
-                                    'sub_id' => $instrument,
-                                    'sub_model' => 'instrument',
-                                    'actions' => [
-                                        'edit' => true,
-                                        'delete' => true,
-                                        'show' => true,
-                                    ]
-                                ])
+                                @if (\Helper::isAdmin())
+                                    @include('components.general-actions-resource', [
+                                        'route' => 'admin.instrumen.aspects',
+                                        'id' => $data['id'],
+                                        'model' => 'aspect',
+                                        'sub_id' => $instrument,
+                                        'sub_model' => 'instrument',
+                                        'actions' => [
+                                            'edit' => true,
+                                            'delete' => true,
+                                            'show' => true,
+                                        ]
+                                    ])
+                                @else
+                                    @include('components.general-actions-resource', [
+                                        'route' => 'admin.instrumen.aspects',
+                                        'id' => $data['id'],
+                                        'model' => 'aspect',
+                                        'sub_id' => $instrument,
+                                        'sub_model' => 'instrument',
+                                        'actions' => [
+                                            'show' => true,
+                                        ]
+                                    ])
+                                @endif
                             </td>
                         </tr>
+
                         @php $i++; @endphp
                     @empty
                         <tr>

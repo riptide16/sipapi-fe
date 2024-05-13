@@ -103,6 +103,22 @@
                             <td colspan="2">No Have Match Data in Table</td>
                         </tr>
                     @endforelse
+                    @forelse ($fetchDataGdrive['data'] as $data)
+                        <tr>
+                            <td>{{ $i + 1 }}</td>
+                            <td>Link Google Drive Bukti Fisik</td>
+                            <td>
+                                @if(count($data['answers']) > 0)
+                                    <a class="btn btn-info" target="_blank" href="{{ $data['answers'][0]['url'] }}"><x-icons.download/></a>
+                                @endif
+                            </td>
+                        </tr>
+                        @php $i++; @endphp
+                    @empty
+                        <tr>
+                            <td colspan="2">No Have Match Data in Table</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

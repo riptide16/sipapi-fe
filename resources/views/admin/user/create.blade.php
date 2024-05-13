@@ -81,6 +81,14 @@
                     <x-forms.select-region name="region_id" :placeholder="__('Wilayah')" :fill="__('')" disabled/>
                 </div>
             </div>
+            <div class="form-group row mb-2">
+                <div class="col-md-3">
+                    <x-forms.label :label="__('Provinsi')"/>
+                </div>
+                <div class="col-md-9">
+                    <x-forms.select-province name="province_id" :placeholder="__('Provinsi')" :fill="$user['province']['id'] ?? __('')"/>
+                </div>
+            </div>
             <div class="form-group row text-center">
                 <div class="col-md-12">
                     <x-buttons.save :title="__('Save User')"/>

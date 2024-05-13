@@ -39,6 +39,16 @@
                 <x-forms.label class="text-info" :label="$result['institution']['library_name'] ?? '-'"/>
             </div>
         </div>
+        @if (\Helper::isAdmin())
+        <div class="form-group mb-2">
+            <div class="col-md-3">
+                <x-forms.label :label="__('Unduh Onthespot :')"/>
+            </div>
+            <div class="col-md-9">
+                <a href="{{ route('admin.penilaian.export_onthespot', [$id] ) }}" class="btn btn-success" style="color:white">Export File</a>
+            </div>
+        </div>
+        @endif
         <hr>
     </div>
     <div class="card-body">
@@ -72,7 +82,7 @@
                             <td>{{ $result['evaluation']['final_result']['predicate'] ? __('Akreditasi '.$result['evaluation']['final_result']['predicate']) : '-' }}</td>
                         </tr>
                         <tr>
-                            <td><strong>Berita Acara</strong></td>
+                            <td><strong>Hasil Penilaian</strong></td>
                             @if (isset($result['evaluation']['document_file']))
                                 <td><a class="btn-info px-3 py-1 rounded" href="{{ $result['evaluation']['document_file'] }}">Download</a></td>
                             @else
@@ -129,27 +139,31 @@
     </div>
     @if (isset($result['evaluation']['recommendations']))
         <div class="card-body">
-            <h5>Rekomendasi</h5>
-            <table class="table table-centered table-nowrap mb-0 rounded" style="border-collapse: separate; border-spacing:0 10px;">
-                <tbody>
-                    @foreach ($result['evaluation']['recommendations'] as $recommendation)
-                        <tr>
-                            <td class="border-bottom-1 ps-0 pe-4" width="50">{{ 'Komponen '.$recommendation['name'] }}</td>
-                            <td class="border-1 border-dark rounded">{{ $recommendation['content'] }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <h4>Rekomendasi</h4>
+            @foreach ($result['evaluation']['recommendations'] as $recommendation)
+                <b>{{ 'Komponen '.$recommendation['name'] }}</b>
+                <p>{{ $recommendation['content'] }}</p>
+            @endforeach
         </div>
     @endif
 
     @if (\Helper::isAsesor())
         <div class="card-body">
             <form action="{{ route('admin.penilaian.upload', [$result['evaluation']['id']]) }}" method="POST" enctype="multipart/form-data">
+                <h4>Dokumen Master Penilaian</h4>
+                <p>Silahkan unduh dokumen hasil penilaian pada link dibawah, dan unggah kembali pada isian dibawah ini</p>
                 @csrf
+                <div class="form-group mb-4">
+                    <div class="col-md-3">
+                        <h5>Unduh Hasil Penilaian :</h5>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ route('admin.penilaian.export_onthespot', [$id] ) }}" class="btn btn-success" style="color:white">Export File</a>
+                    </div>
+                </div>
                 <div class="form-group row mb-2">
-                    <h5>Unggah Dokumen Berita Acara</h5>
-                    <x-forms.input type="file" name="file" accept=".doc,.docx,.pdf" required />
+                    <h5>Unggah Dokumen Hasil Penilaian</h5>
+                    <x-forms.input type="file" name="file" accept=".xlsx" required />
                 </div>
                 <div class="form-group row mt-2 mb-2">
                     <div class="col-md-12">

@@ -38,7 +38,7 @@
                     <x-forms.label :label="__('Nama Perpustakaan')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-forms.input name="library_name" />
+                    <x-forms.input name="library_name" required/>
                 </div>
             </div>
             <div class="form-group row mb-2">
@@ -46,7 +46,8 @@
                     <x-forms.label :label="__('NPP')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-forms.input name="npp" />
+                    <x-forms.input name="npp" required/>
+                    <small><b>Jika belum memiliki NPP, silahkan ajukan <a style="color:#3366CC" href="https://data.perpusnas.go.id/" target="_blank">disini</a></b></small>
                 </div>
             </div>
             <div class="form-group row mb-2">
@@ -94,7 +95,7 @@
             </div>
             <div class="form-group row mb-2">
                 <div class="col-md-3">
-                    <x-forms.label :label="__('Kota')"/>
+                    <x-forms.label :label="__('Kabupaten/Kota')"/>
                 </div>
                 <div class="col-md-9">
                     <x-forms.select-city name="city_id" :placeholder="__('Kota')" :fill="$data['city']['id'] ?? ''" required disabled />
@@ -145,7 +146,7 @@
                     <x-forms.label :label="__('Nomor Telepon')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-forms.input name="telephone_number" />
+                    <x-forms.input name="telephone_number" required/>
                 </div>
             </div>
             <div class="form-group row mb-2">
@@ -153,7 +154,7 @@
                     <x-forms.label :label="__('Nomor Ponsel')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-forms.input name="mobile_number" />
+                    <x-forms.input name="mobile_number" required/>
                 </div>
             </div>
             <div class="form-group row mb-2">
@@ -183,15 +184,15 @@
                     <x-forms.label :label="__('Jumlah Koleksi Perpustakaan (Judul)')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-forms.input name="title_count" required/>
+		    <x-forms.input type="number" min="0" name="title_count" required/>
                 </div>
             </div>
             <div class="form-group row mb-2">
                 <div class="col-md-3">
-                    <x-forms.label :label="__('Upload Surat Pernyataaan Penulisan Sertifikat')"/>
+                    <x-forms.label :label="__('Upload Surat Pendaftaran Asesi')"/>
                 </div>
                 <div class="col-md-9">
-                    <x-file-download-url class="d-block text-info" :filename="'Contoh Surat Pernyataan Penulisan Sertifikat'" target="_blank" />
+                    <x-file-download-url class="d-block text-info" :filename="'Contoh Surat Pendaftaran'" target="_blank" />
                     <input type="file" name="registration_form_file" required /> <br>
                     <span>Maksimum ukuran file: 2 MB dan format file: .pdf, .jpg, .jpeg</span>
                     @error('registration_form')

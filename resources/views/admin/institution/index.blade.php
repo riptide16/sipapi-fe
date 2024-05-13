@@ -75,6 +75,9 @@
                         <th class="border-0">Lembaga Induk</th>
                         <th class="border-0">Nama Perpustakaan</th>
                         <th class="border-0">Jenis Perpustakaan</th>
+                        <th class="border-0">Wilayah</th>
+                        <th class="border-0">Provinsi</th>
+                        <th class="border-0">Kab./Kota</th>
                         @if ($dataFilter['datatype'] == 'request')
                             <th class="border-0">Nama Asesi</th>
                         @endif
@@ -93,6 +96,9 @@
                             <td>{{ $data['agency_name'] }}</td>
                             <td>{{ $data['library_name'] }}</td>
                             <td>{{ $data['category'] }}</td>
+                            <td>{{ $data['region']['name'] }}</td>
+                            <td>{{ $data['province']['name'] }}</td>
+                            <td>{{ $data['city']['type'] }} {{ $data['city']['name'] }}</td>
                             @if ($dataFilter['datatype'] == 'request')
                                 <td>{{ isset($data['user']) ? $data['user']['name'] : '-' }}</td>
                             @endif

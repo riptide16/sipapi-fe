@@ -39,11 +39,12 @@ class LoginController extends Controller
 
         try {
             $login = $this->admin->createNew($this->endpoint, $data);
+
             if ($login['success'] == true) {
                 $fetchDataMenu = $this->admin->getAll($this->endpointMenu, [], [
                     'Authorization' => 'Bearer ' . $login['data']['access_token']
                 ]);
-		
+
                 $session = session(['token' => $login, 'menus' => $fetchDataMenu['data']]);
 
                 $self = $this->admin->getAll($this->endpointSelf, [], [
@@ -60,7 +61,7 @@ class LoginController extends Controller
                 ]);
 
                 $notification = session(['allNotifications' => $notifAll,'notifications' => $notif]);
-		
+
                 if (session('user')['data']['role']['name'] == 'asesor' && empty(session('user')['data']['province'])) {
                     return redirect(route('admin.profile'));
                 }

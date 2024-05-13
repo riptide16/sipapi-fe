@@ -11,8 +11,8 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item" aria-current="page">
-                    <a href="{{ route('admin.roles.index') }}" class="text-info">
-                        All Roles
+                    <a href="{{ route('admin.role.index') }}" class="text-info">
+                        All Role
                     </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">Create Role</li>
@@ -23,7 +23,7 @@
 </div>
 <div class="card border-0 shadow mb-4">
     <div class="card-body">
-        <form action="{{ route('admin.roles.store') }}" method="POST">
+        <form action="{{ route('admin.role.store') }}" method="POST">
             @csrf
             <div class="form-group row mb-2">
                 <div class="col-md-3">
@@ -44,7 +44,7 @@
             <div class="form-group row text-center">
                 <div class="col-md-12">
                     <x-buttons.save :title="__('Save Role')"/>
-                    <x-buttons.cancel :href="route('admin.roles.index')"/>
+                    <x-buttons.cancel :href="route('admin.role.index')"/>
                 </div>
             </div>
         </form>
