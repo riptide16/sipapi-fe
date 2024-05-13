@@ -265,6 +265,13 @@ class EvaluationController extends Controller
             'Authorization' => "Bearer " . $token
         ], 'instruments');
 
-        return view('admin.evaluations.download-file', compact('id', 'fetchData', 'fetchDataVideo'));
+        $fetchDataGdrive = $this->admin->getByID($this->endpointAccreditation, $id, [
+            'page' => 1,
+            'type' => 'gdrive'
+        ], [
+            'Authorization' => "Bearer " . $token
+        ], 'instruments');
+
+        return view('admin.evaluations.download-file', compact('id', 'fetchData', 'fetchDataVideo', 'fetchDataGdrive'));
     }
 }

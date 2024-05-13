@@ -351,7 +351,14 @@ class AccreditationController extends Controller
             'Authorization' => "Bearer " . $token
         ], 'instruments');
 
-        return view('admin.accreditation.download-file', compact('fetchData', 'fetchDataVideo'));
+        $fetchDataGdrive = $this->admin->getByID($this->endpoint, $id, [
+            'page' => 1,
+            'type' => 'gdrive'
+        ], [
+            'Authorization' => "Bearer " . $token
+        ], 'instruments');
+
+        return view('admin.accreditation.download-file', compact('fetchData', 'fetchDataVideo','fetchDataGdrive'));
     }
 
     public function accept(Request $request, $id)
