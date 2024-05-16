@@ -53,6 +53,14 @@
         </div>
         <div class="form-group mb-2">
             <div class="col-md-3">
+                <x-forms.label :label="__('Nama Lembaga Induk :')"/>
+            </div>
+            <div class="col-md-9">
+                <x-forms.label class="text-info" :label="$fetchData['data'][0]['accreditation']['institution']['agency_name']"/>
+            </div>
+        </div>
+        <div class="form-group mb-2">
+            <div class="col-md-3">
                 <x-forms.label :label="__('Nama Perpustakaan :')"/>
             </div>
             <div class="col-md-9">
@@ -60,7 +68,59 @@
             </div>
         </div>
         <hr>
+        <div class="form-group mb-2">
+        <div class="col-md-3">
+            <x-forms.label :label="__('Nilai Self Assessment')"/>
+        </div>
+        <div class="col-md-9">
+            <x-forms.label class="text-info" :label="round($finalResult, 2)"/>
+        </div>
     </div>
+    <div class="form-group mb-2">
+        <div class="table-responsive">
+            <table class="table table-centered table-nowrap mb-0 rounded">
+                <thead class="thead-light">
+                    <tr>
+                        <th>No.</th>
+                        <th>Komponen</th>
+                        <th>Jumlah Skor</th>
+                        <th>Jumlah Soal</th>
+                        <th>Bobot</th>
+                        <th>Nilai</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php
+                        $index = 1;
+                    @endphp
+                    @foreach ($result['results'] as $item)
+                        <tr>
+                            <td class="border-bottom-1 rounded-start">{{ $index }}</td>
+                            <td class="border-bottom-1">{{ $item['instrument_component'] }}</td>
+                            <td class="border-bottom-1">{{ $item['total_value'] }}</td>
+                            <td class="border-bottom-1">{{ $item['total_instrument'] }}</td>
+                            <td class="border-bottom-1">{{ $item['weight'] }}</td>
+                            <td class="border-bottom-1">{{ round($item['score'], 2) }}</td>
+                        </tr>
+                        @php
+                            $index++;
+                        @endphp
+                    @endforeach
+                </tbody>
+                <tfoot class="bg-dark text-white">
+                    <tr>
+                        <td colspan="2"><b>Jumlah</b></td>
+                        <td><b>{{ $result['finalResult']['total_value'] }}</b></td>
+                        <td><b>{{ $result['finalResult']['total_instrument'] }}</b></td>
+                        <td><b>{{ $result['finalResult']['weight'] }}</b></td>
+                        <td><b>{{ round($result['finalResult']['score'], 2) }}</b></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    </div>
+    
     <div class="card-body">
         @if (!empty($fetchData['data']))
             @foreach ($fetchData['data'] as $data)

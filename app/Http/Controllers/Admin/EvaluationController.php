@@ -54,10 +54,12 @@ class EvaluationController extends Controller
         }
 
         $assignment = session('token.assignment_'.$id);
+
         if (!$assignment) {
             $assignments = $this->admin->getById($this->endpointAccreditation, $id."/evaluation_assignments", [], [
                 'Authorization' => "Bearer " . $token
             ]);
+            
             if (!empty($assignments['data'])) {
                 $assignment = $assignments['data'][0];
                 session(['token.assignment_'.$id => $assignment]);
@@ -66,7 +68,18 @@ class EvaluationController extends Controller
 
         $setFetchDataEvaluation = session(['getFetchDataEvaluation' => $fetchData]);
 
-        return view('admin.evaluations.show', compact('fetchData', 'id', 'assignment'));
+	    $accreditation = $this->admin->getByID($this->endpointAccreditation, $id, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+
+        $result = $accreditation['data'];
+        usort($result['results'], fn($a, $b) => $a['instrument_component_id'] <=> $b['instrument_component_id']);
+
+        $finalResult = $accreditation['data']['finalResult']['score'];
+
+        $setFetchDataEvaluation = session(['getFetchDataEvaluation' => $fetchData]);
+
+        return view('admin.evaluations.show', compact('fetchData', 'id', 'assignment','finalResult','result'));
     }
 
     public function evaluate($id, Request $request)
