@@ -212,6 +212,7 @@ Route::prefix('penilaian')->as('penilaian.')->group(function () {
     Route::get('rekap/{id}', [EvaluationController::class, 'recap'])->name('recap');
     Route::post('rekap/{id}/upload', [EvaluationController::class, 'uploadDocument'])->name('upload');
     Route::get('file-download/{id}', [EvaluationController::class, 'downloadFile'])->name('file_download');
+    Route::get('show-institution/{id}', [EvaluationController::class, 'showInstitution'])->name('show_institution');
 });
 
 Route::prefix('sertifikasi')->as('sertifikasi.')->group(function () {

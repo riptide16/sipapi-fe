@@ -287,4 +287,14 @@ class EvaluationController extends Controller
 
         return view('admin.evaluations.download-file', compact('id', 'fetchData', 'fetchDataVideo', 'fetchDataGdrive'));
     }
+
+    public function showInstitution($id)
+    {
+        $token = session('token.data.access_token');
+        $fetchDataInstitution = $this->admin->getById($this->endpoint, $id."/show_institution", [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+        
+        return view('admin.evaluations.show-institution', compact('id','fetchDataInstitution'));
+    }
 }

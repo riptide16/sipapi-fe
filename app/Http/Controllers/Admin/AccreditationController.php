@@ -63,15 +63,31 @@ class AccreditationController extends Controller
             'Authorization' => "Bearer " . $token
         ]);
 
+        $fetchDataGdrive = $this->admin->getByID($this->endpoint, $id . '/' . 'instruments', [
+            'page' => $request->page ?? 1,
+            'type' => 'gdrive',
+        ], [
+            'Authorization' => "Bearer " . $token
+        ]);
+
         if (isset($fetchData['code']) && $fetchData['code'] == 'ERR4001') {
             return redirect()->route('logout');
         }
+
+	    $accreditationData = $this->admin->getByID($this->endpoint, $id, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+
+        $result = $accreditationData['data'];
+        usort($result['results'], fn($a, $b) => $a['instrument_component_id'] <=> $b['instrument_component_id']);
+        $finalResult = $accreditationData['data']['finalResult']['score'];
+
 
         $status = $request->status ?? null;
         $accreditation = $fetchData['data'][0]['accreditation'] ?? null;
         $setFetchDataAccreditation = session(['getFetchDataAccreditation' => $fetchData]);
 
-        return view('admin.accreditation.show', compact('fetchData', 'id', 'status', 'accreditation', 'fetchDataVideo'));
+        return view('admin.accreditation.show', compact('fetchData', 'id', 'status', 'accreditation', 'fetchDataVideo','fetchDataGdrive','finalResult','result'));
     }
 
     public function create(Request $request)
