@@ -127,6 +127,73 @@
             </table>
         </div>
     </div>
+    <div class="card-body">
+        <h5>Onthespot</h5>
+        <div class="row">
+            @php
+                $index = 1;
+            @endphp
+            @foreach ($result['evaluation']['evaluation_result'] as $item)
+            <div class="col-3 mb-5">
+                {{ $index.'. '.$item['instrument_component'] }}
+                @foreach ($item['onthespot'] as $score)
+                    @if ($score['total'] == '5')
+                        A
+                    @elseif ($score['total'] == '4')
+                        B
+                    @elseif ($score['total'] == '3')
+                        C
+                    @elseif ($score['total'] == '2')
+                        <td class="border-bottom-1">D</td>
+                    @else
+                        E
+                    @endif
+                    <br>
+                @endforeach
+            </div>
+            @php
+                $index++;
+            @endphp
+            @endforeach
+        </div>
+        <div class="table-responsive">
+            <table class="table table-centered table-nowrap mb-0 rounded">
+                <tbody>
+                    @php
+                        $index = 1;
+                    @endphp
+                    @foreach ($result['evaluation']['evaluation_result'] as $item)
+                        @php
+                            $questionNumber = 1;
+                        @endphp
+                        <tr>
+                            <td class="border-bottom-1">{{ $index.'. '.$item['instrument_component'] }}</td>
+                            @foreach ($item['onthespot'] as $score)
+                                @if ($score['total'] == '5')
+                                    <td class="border-bottom-1">A</td>
+                                @elseif ($score['total'] == '4')
+                                    <td class="border-bottom-1">B</td>
+                                @elseif ($score['total'] == '3')
+                                    <td class="border-bottom-1">C</td>
+                                @elseif ($score['total'] == '2')
+                                    <td class="border-bottom-1">D</td>
+                                @else
+                                    <td class="border-bottom-1">E</td>
+                                @endif
+                                @php
+                                    $questionNumber++;
+                                @endphp
+                            @endforeach
+                            </td>
+                        </tr>
+                        @php
+                            $index++;
+                        @endphp
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
     @if (isset($result['evaluation']['recommendations']))
         <div class="card-body">
             <h5>Rekomendasi</h5>
@@ -134,8 +201,8 @@
                 <tbody>
                     @foreach ($result['evaluation']['recommendations'] as $recommendation)
                         <tr>
-                            <td class="border-bottom-1 ps-0 pe-4" width="50">{{ 'Komponen '.$recommendation['name'] }}</td>
-                            <td class="border-1 border-dark rounded">{{ $recommendation['content'] }}</td>
+                            <td class="border-bottom-1 ps-0 pe-4" >{{ 'Komponen '.$recommendation['name'] }}</td>
+                            <td class="border-1 border-dark rounded" style="white-space: pre-line;">{{ $recommendation['content'] }}</td>
                         </tr>
                     @endforeach
                 </tbody>
