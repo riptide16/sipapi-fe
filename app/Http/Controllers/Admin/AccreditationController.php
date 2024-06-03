@@ -12,6 +12,7 @@ class AccreditationController extends Controller
 {
     public $endpoint;
     public $endpointInstrument;
+    public $endpointCountInstrument;
     private $admin;
     public function __construct(AdminService $admin)
     {
@@ -19,6 +20,7 @@ class AccreditationController extends Controller
         $this->admin = $admin;
 
         $this->endpointInstrument = 'admin/self/instrument';
+        $this->endpointCountInstrument = 'admin/instrument';
     }
 
     public function index(Request $request)
@@ -229,11 +231,31 @@ class AccreditationController extends Controller
 
     public function finalize($id)
     {
+        $token = session('token.data.access_token');
+
+        //  Jumlah isian Instrumen yang sudah dijawab Asesi
+	    $accreditationData = $this->admin->getByID($this->endpoint, $id, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+
+
+        // Menghitung Jumlah isian Instrumen sama dengan jumlah IK Instrumen atau tidak
+        $category = $accreditationData["data"]["institution"]["category"];
+        
+        $countInstrument = $this->admin->getByID($this->endpointCountInstrument, $category, [], [
+            'Authorization' => "Bearer " . $token
+        ]);
+        
+        if ($accreditationData['data']['finalResult']['total_instrument'] != $countInstrument) {
+            session()->flash('error', 'Mohon maaf isian Instrumen belum lengkap. Silahkan Cek Kembali.');
+
+            return redirect()->back();
+        }
+
         $data = [
             'is_finalized' => true,
         ];
 
-        $token = session('token.data.access_token');
         $result = $this->admin->createNew($this->endpoint . '/' . $id . '/' . 'finalize', $data, [
             'Authorization' => "Bearer " . $token
         ]);
