@@ -44,17 +44,14 @@
                     @php
                         $i = 0;
                     @endphp
-                    @if (!empty($fetchData['data']))
-                        @forelse ($fetchData['data'] as $data)
+                    @if (!empty($fetchData))
+                        @forelse ($fetchData as $data)
                             <tr>
                                 <td>{{ $i + 1 }}</td>
                                 <td>{{ $data['code'] }}</td>
                                 <td>{{ $data['institution']['agency_name'] ?? '-' }}</td>
                                 <td>{{ $data['institution']['library_name'] ?? '-' }}</td>
-                                <!-- <td>{{ \Helper::formatDate($data['created_at'], 'd F Y') }}</td> -->
-                                <!-- <td>{{ \Helper::formatDate($data['evaluation']['created_at'], 'd F Y') }}</td> -->
                                 <td>{{ \Helper::formatDate($data['meeting_date'], 'd F Y') }}</td>
-                                <!-- <td>{{ $data['evaluation']['final_result']['total_value'] }}</td> -->
                                 <td>{{ $data['predicate'] }}</td>
                                 <td>{{ \Helper::titlize($data['certificate_status']) }}</td>
                                 <td>{{ \Helper::formatDate($data['certificate_sent_at'], 'd F Y') }}</td>

@@ -35,13 +35,13 @@ class CertificationController extends Controller
         
         $index = 0;
 
-        foreach($fetchData["data"] as $row){
+        foreach($fetchData as $row){
             if($row["certificate_file"]){
-                $fetchData["data"][$index]["certificate_file"] = url("/storage_files/secure") . "/" . $row["certificate_file"];
+                $fetchData[$index]["certificate_file"] = url("/storage_files/secure") . "/" . $row["certificate_file"];
             }
     
             if($row["recommendation_file"]){
-                $fetchData["data"][$index]["recommendation_file"] = url("/storage_files/secure") . "/" . $row["recommendation_file"];
+                $fetchData[$index]["recommendation_file"] = url("/storage_files/secure") . "/" . $row["recommendation_file"];
             }
             $index++;
         }
